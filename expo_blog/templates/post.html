@@ -1,0 +1,66 @@
+{% extends 'base.html'%}
+{% block content %}
+	<!-- END #fh5co-header -->
+	<div class="container-fluid">
+		<div class="row fh5co-post-entry single-entry">
+			<article class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 col-xs-offset-0">
+				<h2 class="fh5co-article-title animate-box"><a>{{ post.author.username }}</a></h2>
+				<span class="fh5co-meta fh5co-date animate-box">{{ post.date_posted }}</span>
+				{% if post.author == current_user %}
+                <div>
+                  <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Изменить</a>
+                  <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Удалить">
+                  </form>
+                </div>
+              {% endif %}
+
+				<div class="col-lg-12 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 text-center content-article">
+					<div class="row">
+						<div class="col-md-12 animate-box">
+							<h1>{{ post.title }}</h1>
+
+							<p class="article-content">{{ post.content }}</p>						
+						</div>
+
+					<div class="row">
+						<div class="col-md-12 animate-box">	
+							{% for comment in post.comments %}
+								<ul><li><p class="article-content">{{ comment }}</p></li></ul>
+							{% endfor %}					
+						</div>	
+				</div>
+				{% if current_user.is_authenticated %}
+				<div class="col-lg-12 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 text-center content-article">
+					<div class="row">
+						<div class="col-md-12 animate-box">
+							<div class="content-section">
+								<form method="POST" action="">
+									{{ form.hidden_tag() }}
+									<fieldset class="form-group">
+										<legend class="border-bottom mb-4">Комментарий</legend>
+										<div class="form-group">
+											{{ form.body.label(class="form-control-label") }}
+											{% if form.body.errors %}
+												{{ form.body(class="form-control form-control-lg is-invalid") }}
+												<div class="invalid-feedback">
+													{% for error in form.body.errors %}
+														<span>{{ error }}</span>
+													{% endfor %}
+												</div>
+											{% else %}
+												{{ form.body(class="form-control form-control-lg") }}
+											{% endif %}
+										</div>
+									</fieldset>
+									<div class="form-group">
+								{{ form.submit(class="btn btn-outline-info") }}
+							</div>
+						</form>
+					</div>
+				{% endif %}
+			</article>
+		</div>
+	</div>
+
+{% endblock %}
